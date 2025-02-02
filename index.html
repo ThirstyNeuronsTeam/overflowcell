@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Table</title>
+    <style>
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            margin: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        /* Set maximum width for description column */
+        .description-cell {
+            max-width: 300px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .status-in-progress { background-color: #3498db; }
+        .status-completed { background-color: #2ecc71; }
+        .status-pending { background-color: #f1c40f; }
+        .status-planned { background-color: #95a5a6; }
+        .status-in-review { background-color: #9b59b6; }
+
+        #loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        #error {
+            text-align: center;
+            padding: 20px;
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Loading...</div>
+    <div id="error"></div>
+    <div class="table-container">
+        <table id="projectTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Assignee</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // Sample JSON data (in real application, this would be in a separate .json file)
+        const projectsData = {
+            "projects": [
+                {
+                    "id": 1,
+                    "title": "Project Management System Implementation",
+                    "description": "Implementation of a comprehensive project management system including task tracking, resource allocation, and timeline management for multiple departments across the organization.",
+                    "status": "In Progress",
+                    "priority": "High",
+                    "assignee": "John Smith"
+                },
+                {
+                    "id": 2,
+                    "title": "Website Redesign",
+                    "description": "Complete overhaul of the company website with modern design principles, improved user experience, and mobile-first approach to enhance customer engagement.",
+                    "status": "Completed",
+                    "priority": "Medium",
+                    "assignee": "Sarah Johnson"
+                },
+                {
+                    "id": 3,
+                    "title": "Data Migration Strategy",
+                    "description": "Development and execution of a data migration strategy to transfer legacy system data to the new cloud-based platform while ensuring data integrity and minimal downtime.",
+                    "status": "Pending",
+                    "priority": "High",
+                    "assignee": "Mike Wilson"
+                },
+                {
+                    "id": 4,
+                    "title": "Security Audit",
+                    "description": "Comprehensive security audit of all systems and networks to identify vulnerabilities and implement necessary security measures to protect sensitive data.",
+                    "status": "In Review",
+                    "priority": "Critical",
+                    "assignee": "Emily Brown"
+                },
+                {
+                    "id": 5,
+                    "title": "Employee Training Program",
+                    "description": "Development of a comprehensive training program for new employees covering company policies, procedures, and systems to ensure smooth onboarding.",
+                    "status": "Planned",
+                    "priority": "Medium",
+                    "assignee": "David Clark"
+                }
+            ]
+        };
+
+        // Function to get status badge class
+        function getStatusClass(status) {
+            const statusMap = {
+                'In Progress': 'status-in-progress',
+                'Completed': 'status-completed',
+                'Pending': 'status-pending',
+                'Planned': 'status-planned',
+                'In Review': 'status-in-review'
+            };
+            return statusMap[status] || 'status-pending';
+        }
+
+        // Function to populate table
+        function populateTable(data) {
+            const tableBody = document.getElementById('tableBody');
+            
+            data.projects.forEach(project => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${project.id}</td>
+                    <td>${project.title}</td>
+                    <td class="description-cell">${project.description}</td>
+                    <td><span class="status-badge ${getStatusClass(project.status)}">${project.status}</span></td>
+                    <td>${project.priority}</td>
+                    <td>${project.assignee}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Simulate loading data
+        document.getElementById('loading').style.display = 'block';
+        
+        // Simulate async data loading
+        setTimeout(() => {
+            try {
+                document.getElementById('loading').style.display = 'none';
+                populateTable(projectsData);
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Error loading data';
+            }
+        }, 500);
+    </script>
+</body>
+</html>
